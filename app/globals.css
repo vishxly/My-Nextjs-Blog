@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* styles/globals.css */
+
+/* Existing styles... */
+
+/* Styles for code blocks */
+.post-content pre {
+  background-color: #23241f;
+  color: #f8f8f2;
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+  border-radius: 0.3em;
+}
+
+.post-content code {
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 1em;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+}
+
+/* Additional styles to preserve formatting */
+.post-content p,
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content ul,
+.post-content ol {
+  margin-bottom: 1em;
+}
+
+.post-content ul,
+.post-content ol {
+  padding-left: 2em;
+}
+
+.post-content blockquote {
+  border-left: 4px solid #ccc;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding-left: 16px;
+}
