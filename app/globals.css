@@ -47,3 +47,12 @@
   margin-top: 5px;
   padding-left: 16px;
 }
+
+
+/* src/styles/globals.css */
+body {
+  @apply bg-white text-black;
+}
+body.dark {
+  @apply bg-gray-900 text-white;
+}

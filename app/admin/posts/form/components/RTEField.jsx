@@ -39,7 +39,7 @@ export function RTEField() {
   }, []);
 
   return (
-    <div>
+    <div className="dark:text-white">
       <ReactQuill
         value={data?.content}
         onChange={handleChange}

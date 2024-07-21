@@ -28,98 +28,138 @@ export default function Page() {
         }
     }, [updateAuthorId])
 
-
-    return <main className="w-full p-6 flex flex-col gap-3">
-        <div className="flex gap-5 items-center">
-            {updateAuthorId && <div className="flex">
-                <h3 className="text-white bg-orange-500 px-4 py-2 rounded-full text-xs font-bold">Update</h3>
-            </div>}
-            {!updateAuthorId && <div className="flex">
-                <h3 className="text-white bg-green-500 px-4 py-2 rounded-full text-xs font-bold">Create</h3>
-            </div>}
-            <h1 className="font-bold">Author | Form</h1>
-        </div>
-        <section className="flex">
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    if (updateAuthorId) {
-                        handleUpdate();
-                    } else {
-                        handleCreate();
-                    }
-                }}
-                className="flex flex-col gap-2 bg-blue-50 rounded-xl p-7">
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-500">Author Name <span className="text-red-500">*</span> </label>
-                    <input
-                        className="px-4 py-2 rounded-full border bg-gray-50"
-                        placeholder="Enter Author Name"
+    return (
+        <main className="w-full min-h-screen p-4 md:p-6 flex flex-col gap-3 dark:bg-gray-900 dark:text-white ">
+            <div className="flex flex-wrap gap-3 md:gap-5 items-center">
+                {updateAuthorId && (
+                    <div className="flex">
+                        <h3 className="text-white bg-orange-500 px-3 md:px-4 py-1 md:py-2 rounded-full text-xs font-bold">Update</h3>
+                    </div>
+                )}
+                {!updateAuthorId && (
+                    <div className="flex">
+                        <h3 className="text-white bg-green-500 px-3 md:px-4 py-1 md:py-2 rounded-full text-xs font-bold">Create</h3>
+                    </div>
+                )}
+                <h1 className="font-bold">Author | Form</h1>
+            </div>
+            <section className="flex justify-center md:justify-start">
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        if (updateAuthorId) {
+                            handleUpdate();
+                        } else {
+                            handleCreate();
+                        }
+                    }}
+                    className="flex flex-col gap-2 bg-blue-50 rounded-xl p-4 md:p-7 w-full max-w-md"
+                >
+                    <InputField
+                        label="Author Name"
                         type="text"
-                        onChange={(e) => {
-                            handleData('name', e.target.value)
-                        }}
                         value={data?.name}
+                        onChange={(e) => handleData('name', e.target.value)}
                         required
                     />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-500">Author Email <span className="text-red-500">*</span> </label>
-                    <input
-                        className="px-4 py-2 rounded-full border bg-gray-50"
-                        placeholder="Enter Author Email"
+                    <InputField
+                        label="Author Email"
                         type="email"
-                        onChange={(e) => {
-                            handleData('email', e.target.value)
-                        }}
                         value={data?.email}
+                        onChange={(e) => handleData('email', e.target.value)}
                         required
                     />
-                </div>
-                {data?.photoURL && <div>
-                    <img className="h-40" src={data?.photoURL} alt="" />
-                </div>}
-                {image && <div>
-                    <img className="h-40" src={URL.createObjectURL(image)} alt="" />
-                </div>}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-500">Image  </label>
-                    <input
-                        className="px-4 py-2 rounded-full border bg-gray-50"
-                        placeholder="Enter Author Slug"
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                            e.preventDefault();
-                            setImage(e.target.files[0]);
-                        }}
+                    <ImagePreview photoURL={data?.photoURL} image={image} />
+                    <ImageUpload setImage={setImage} />
+                    
+                    {error && <p className="text-red-500 text-sm">{error}</p>}
+                    
+                    <FormButtons
+                        isLoading={isLoading}
+                        isDone={isDone}
+                        updateAuthorId={updateAuthorId}
+                        handleDelete={handleDelete}
                     />
-                </div>
+                </form>
+            </section>
+        </main>
+    )
+}
 
-                {error && <p className="text-red-500 text-sm">{error}</p>}
+function InputField({ label, type, value, onChange, required }) {
+    return (
+        <div className="flex flex-col gap-2">
+            <label className="text-sm text-gray-500">
+                {label} {required && <span className="text-red-500">*</span>}
+            </label>
+            <input
+                className="px-4 py-2 rounded-full border bg-gray-50"
+                placeholder={`Enter ${label}`}
+                type={type}
+                onChange={onChange}
+                value={value}
+                required={required}
+            />
+        </div>
+    )
+}
 
-                {!isDone && <button
-                    type="submit"
-                    disabled={isLoading || isDone}
-                    className="bg-blue-500 rounded-full px-4 py-2 text-white">
-                    {isLoading ? "Loading..." : updateAuthorId ? "Update" : "Create"}
-                </button>}
+function ImagePreview({ photoURL, image }) {
+    if (!photoURL && !image) return null;
+    return (
+        <div className="flex justify-center">
+            <img className="h-40 object-cover" src={image ? URL.createObjectURL(image) : photoURL} alt="" />
+        </div>
+    )
+}
 
-                {updateAuthorId && !isDone && <button
+function ImageUpload({ setImage }) {
+    return (
+        <div className="flex flex-col gap-2">
+            <label className="text-sm text-gray-500">Image</label>
+            <input
+                className="px-4 py-2 rounded-full border bg-gray-50"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                    e.preventDefault();
+                    setImage(e.target.files[0]);
+                }}
+            />
+        </div>
+    )
+}
+
+function FormButtons({ isLoading, isDone, updateAuthorId, handleDelete }) {
+    if (isDone) {
+        return (
+            <h3 className="text-green-500 font-bold text-center">
+                Successfully {updateAuthorId ? "Updated" : "Created"}!
+            </h3>
+        )
+    }
+
+    return (
+        <div className="flex flex-col gap-2">
+            <button
+                type="submit"
+                disabled={isLoading}
+                className="bg-blue-500 rounded-full px-4 py-2 text-white"
+            >
+                {isLoading ? "Loading..." : updateAuthorId ? "Update" : "Create"}
+            </button>
+            {updateAuthorId && (
+                <button
                     onClick={(e) => {
                         e.preventDefault();
                         handleDelete(updateAuthorId);
                     }}
-                    disabled={isLoading || isDone}
-                    className="bg-red-500 rounded-full px-4 py-2 text-white">
+                    disabled={isLoading}
+                    className="bg-red-500 rounded-full px-4 py-2 text-white"
+                >
                     {isLoading ? "Loading..." : "Delete"}
-                </button>}
-
-                {isDone && <h3 className="text-green-500 font-bold text-center">
-                    Successfully {updateAuthorId ? "Updated" : "Created"} !
-                </h3>}
-
-            </form>
-        </section>
-    </main>
+                </button>
+            )}
+        </div>
+    )
 }

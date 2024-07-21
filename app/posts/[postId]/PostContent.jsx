@@ -1,8 +1,8 @@
 // app/posts/[postId]/PostContent.jsx
-'use client'
+"use client";
 
-import { useEffect } from 'react';
-import hljs from 'highlight.js';
+import { useEffect } from "react";
+import hljs from "highlight.js";
 
 export default function PostContent({ content }) {
   useEffect(() => {
@@ -10,6 +10,9 @@ export default function PostContent({ content }) {
   }, [content]);
 
   return (
-    <div className="post-content" dangerouslySetInnerHTML={{ __html: content }}></div>
+    <div
+      className="post-content prose dark:prose-invert"
+      dangerouslySetInnerHTML={{ __html: content }}
+    ></div>
   );
 }

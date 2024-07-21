@@ -2,9 +2,9 @@
 
 import { useAuth } from "@/lib/contexts/AuthContext"
 import Link from 'next/link'
+import { LogOut } from 'lucide-react'
 
 export default function LoginButton() {
-
     const {
         user,
         isLoading,
@@ -14,39 +14,40 @@ export default function LoginButton() {
     } = useAuth();
 
     if (isLoading) {
-        return <h1>Loading...</h1>
+        return <div className="animate-pulse bg-gray-200 h-10 w-32 rounded-full"></div>
     }
 
     if (user) {
-        return <div className="flex gap-4 items-center">
-            <button
-                onClick={() => {
-                    handleLogout();
-                }}
-                className="flex items-center gap-3 bg-black text-white px-4 py-2 rounded-full"
-            >
-                Logout
-            </button>
-            <Link href='/admin'>
-                <div className="flex gap-4 rounded-xl bg-blue-100 px-3 py-2">
-                    <img className="object-cover h-12 w-12 rounded-full" src={user?.photoURL} alt="" />
-                    <div>
-                        <h1 className="font-bold">{user?.displayName}</h1>
-                        <h1 className="text-sm text-gray-500">{user?.email}</h1>
+        return (
+            <div className="flex gap-4 items-center">
+                <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg"
+                >
+                    <LogOut size={18} />
+                    Logout
+                </button>
+                <Link href='/admin'>
+                    <div className="flex items-center gap-3 bg-blue-100 hover:bg-blue-200 px-4 py-2 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg">
+                        <img className="h-8 w-8 rounded-full object-cover border-2 border-blue-300" src={user?.photoURL} alt="" />
+                        <div className="hidden sm:block">
+                            <h1 className="font-semibold text-sm text-gray-800">{user?.displayName}</h1>
+                            <h2 className="text-xs text-gray-500">{user?.email}</h2>
+                        </div>
                     </div>
-                </div>
-            </Link>
-        </div>
+                </Link>
+            </div>
+        )
     }
 
-    return <section>
+    return (
         <button
-            onClick={() => {
-                handleSignInWithGoogle();
-            }}
-            className="flex items-center gap-3 bg-black text-white px-4 py-2 rounded-full">
-            <img className='h-7' src="/google.png" alt="" />
-            Login With Google
+            onClick={handleSignInWithGoogle}
+            className="flex items-center gap-3 bg-white hover:bg-gray-100 text-gray-800 font-semibold px-6 py-2 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg border border-gray-300"
+        >
+            <img className='h-5' src="/google.png" alt="Google logo" />
+            <span className="hidden sm:inline">Sign in with Google</span>
+            <span className="sm:hidden">Sign in</span>
         </button>
-    </section>
+    )
 }

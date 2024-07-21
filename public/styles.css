@@ -1,0 +1,9 @@
+@media (max-width: 768px) {
+  /* .nav {
+    width: 445px;
+  } */
+
+  .post-table {
+    margin-right: 4rem;
+  }
+}
