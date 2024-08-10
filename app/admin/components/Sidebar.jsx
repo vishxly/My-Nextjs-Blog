@@ -44,7 +44,7 @@ export default function Sidebar() {
     return (
         <>
             <button
-                className="md:hidden fixed top-4 left-4 z-20 p-2 bg-blue-500 text-white rounded-md"
+                className="fixed z-20 p-2 text-white bg-blue-500 rounded-md md:hidden top-4 left-4"
                 onClick={toggleSidebar}
                 aria-label={isOpen ? "Close menu" : "Open menu"}
             >
@@ -58,15 +58,15 @@ export default function Sidebar() {
                     transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0
                     transition-all duration-300 ease-in-out
                     border-r p-6 
-                    bg-white dark:bg-gray-800 dark:border-gray-700
+                    bg-white dark:bg-black dark:border-gray-700
                     flex flex-col
                 `}
             >
-                <ul className='w-full flex flex-col gap-6 mt-16 md:mt-0'>
+                <ul className='flex flex-col w-full gap-6 mt-16 md:mt-0'>
                     {links.map((item, index) => (
                         <Link href={item.link} key={index}>
                             <li 
-                                className='flex gap-3 font-bold items-center bg-blue-50 dark:bg-blue-900 rounded-full px-5 py-2 dark:text-white hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors duration-200'
+                                className='flex items-center gap-3 px-5 py-2 font-bold transition-colors duration-200 rounded-full bg-blue-50 dark:bg-blue-900 dark:text-white hover:bg-blue-100 dark:hover:bg-blue-800'
                                 onClick={() => setIsOpen(false)}
                             >
                                 {item.icon}
@@ -78,7 +78,7 @@ export default function Sidebar() {
             </section>
             {isOpen && (
                 <div 
-                    className="fixed inset-0 bg-black bg-opacity-50 z-0 md:hidden" 
+                    className="fixed inset-0 z-0 bg-black bg-opacity-50 md:hidden" 
                     onClick={toggleSidebar}
                 ></div>
             )}

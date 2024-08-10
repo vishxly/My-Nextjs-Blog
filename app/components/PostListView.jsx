@@ -28,7 +28,7 @@ export default async function PostListView() {
 export function PostCard({ post }) {
   return (
     <Link href={`/posts/${post?.id}`}>
-      <div className="flex flex-col gap-3 p-4 rounded sm:p-5 dark:bg-gray-800 dark:text-white">
+      <div className="flex flex-col gap-3 p-4 rounded sm:p-5 dark:bg-black dark:text-white">
         <div className="relative">
           <div className="absolute flex justify-end w-full p-2 sm:p-3">
             <CategoryCard categoryId={post?.categoryId} />
