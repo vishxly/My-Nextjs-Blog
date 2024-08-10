@@ -9,14 +9,14 @@ export default async function PostListView() {
   const posts = await getAllPosts();
   if (!posts) {
     return (
-      <div className="dark:text-white p-4">
+      <div className="p-4 dark:text-white">
         <h3>Posts Not Available!</h3>
       </div>
     );
   }
   return (
-    <section className="p-4 sm:p-6 md:p-10 dark:bg-gray-900 min-h-screen">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+    <section className="min-h-screen p-4 sm:p-6 md:p-10 dark:bg-black">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-5">
         {posts?.map((post, key) => {
           return <PostCard post={post} key={key} />;
         })}
@@ -28,7 +28,7 @@ export default async function PostListView() {
 export function PostCard({ post }) {
   return (
     <Link href={`/posts/${post?.id}`}>
-      <div className="flex flex-col gap-3 p-4 sm:p-5 rounded dark:bg-gray-800 dark:text-white">
+      <div className="flex flex-col gap-3 p-4 rounded sm:p-5 dark:bg-gray-800 dark:text-white">
         <div className="relative">
           <div className="absolute flex justify-end w-full p-2 sm:p-3">
             <CategoryCard categoryId={post?.categoryId} />
@@ -39,8 +39,8 @@ export function PostCard({ post }) {
             alt=""
           />
         </div>
-        <h1 className="font-bold text-sm sm:text-base">{post?.title}</h1>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+        <h1 className="text-sm font-bold sm:text-base">{post?.title}</h1>
+        <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
           <AuthorCard authorId={post?.authorId} />
           <h5 className="text-xs text-gray-500">
             {post?.timestamp?.toDate()?.toLocaleDateString()}
@@ -54,13 +54,13 @@ export function PostCard({ post }) {
 async function AuthorCard({ authorId }) {
   const author = await getAuthor(authorId);
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex items-center gap-2">
       <img
-        className="h-5 w-5 sm:h-6 sm:w-6 rounded-full object-cover"
+        className="object-cover w-5 h-5 rounded-full sm:h-6 sm:w-6"
         src={author?.photoURL}
         alt=""
       />
-      <h4 className="text-xs sm:text-sm text-gray-500">{author?.name}</h4>
+      <h4 className="text-xs text-gray-500 sm:text-sm">{author?.name}</h4>
     </div>
   );
 }
@@ -70,7 +70,7 @@ async function CategoryCard({ categoryId }) {
   return (
     <div className="flex gap-1 sm:gap-2 items-center bg-white bg-opacity-60 rounded-full px-1 sm:px-2 py-0.5 sm:py-1">
       <img
-        className="h-3 w-3 sm:h-4 sm:w-4 rounded-full object-cover"
+        className="object-cover w-3 h-3 rounded-full sm:h-4 sm:w-4"
         src={category?.iconURL}
         alt=""
       />

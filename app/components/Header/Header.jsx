@@ -1,9 +1,9 @@
 "use client";
 
-import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import CategoryIcon from '@mui/icons-material/Category';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
+import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from "@mui/icons-material/Home";
+import CategoryIcon from "@mui/icons-material/Category";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
 import { useState } from "react";
 import LoginButton from "./LoginButton";
 import AuthContextProvider from "@/lib/contexts/AuthContext";
@@ -15,20 +15,24 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="px-4 sm:px-7 py-3 border-b dark:bg-gray-800 dark:border-gray-700 nav">
-      <div className="flex justify-between items-center">
+    <nav className="px-4 py-3 border-b sm:px-7 dark:bg-black dark:border-gray-700 nav">
+      <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="w-8 h-8 mr-2 md:hidden"></div>
           <Link href={"/"}>
-            <img className="h-8 sm:h-10" src="/logo.png" alt="" />
+            {/* <img className="h-8 sm:h-10" src="/logo.png" alt="" /> */}
+            {/* <h1 className='text-2xl '>BlogV</h1> */}
+            <h1 className="inline-block pb-2 mb-4 text-4xl font-bold text-indigo-600 transition-all duration-300 border-b-4 border-indigo-600 hover:text-indigo-800 hover:border-indigo-800 hover:scale-105">
+              Blog<span className="text-pink-500">V</span>
+            </h1>
           </Link>
         </div>
 
-        <div className="hidden sm:flex gap-6 items-center">
+        <div className="items-center hidden gap-6 sm:flex">
           <NavLinks />
         </div>
 
-        <div className="hidden sm:flex items-center gap-4">
+        <div className="items-center hidden gap-4 sm:flex">
           <ThemeToggle />
           <AuthContextProvider>
             <LoginButton />
@@ -44,9 +48,9 @@ export default function Header() {
       </div>
 
       {isMenuOpen && (
-        <div className="sm:hidden mt-4">
+        <div className="mt-4 sm:hidden">
           <NavLinks />
-          <div className="mt-4 flex items-center gap-4">
+          <div className="flex items-center gap-4 mt-4">
             <ThemeToggle />
             <AuthContextProvider>
               <LoginButton />
@@ -60,7 +64,7 @@ export default function Header() {
 
 function NavLinks() {
   return (
-    <ul className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
+    <ul className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6 sm:items-center">
       <Link href={"/"}>
         <li className="flex items-center gap-2 dark:text-white">
           <HomeIcon fontSize="small" />
