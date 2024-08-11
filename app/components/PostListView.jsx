@@ -39,10 +39,12 @@ export function PostCard({ post }) {
             alt=""
           />
         </div>
-        <h1 className="text-sm font-bold sm:text-base">{post?.title}</h1>
-        <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
+        <h1 className="text-3xl font-bold lg:text-3xl sm:text-xl">
+          {post?.title}
+        </h1>
+        <div className="flex flex-row items-center justify-between">
           <AuthorCard authorId={post?.authorId} />
-          <h5 className="text-xs text-gray-500">
+          <h5 className="text-base text-gray-500">
             {post?.timestamp?.toDate()?.toLocaleDateString()}
           </h5>
         </div>

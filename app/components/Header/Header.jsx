@@ -40,7 +40,7 @@ export default function Header() {
         </div>
 
         <button
-          className="sm:hidden"
+          className="sm:hidden dark:text-white"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <MenuIcon />
