@@ -22,7 +22,7 @@ export default function Header() {
           <Link href={"/"}>
             {/* <img className="h-8 sm:h-10" src="/logo.png" alt="" /> */}
             {/* <h1 className='text-2xl '>BlogV</h1> */}
-            <h1 className="inline-block pb-2 mb-4 text-4xl font-bold text-indigo-600 transition-all duration-300 border-b-4 border-indigo-600 hover:text-indigo-800 hover:border-indigo-800 hover:scale-105">
+            <h1 className="inline-block pb-2 mt-5 mb-4 text-4xl font-bold text-indigo-600 transition-all duration-300 border-b-4 border-indigo-600 hover:text-indigo-800 hover:border-indigo-800 hover:scale-105">
               Blog<span className="text-pink-500">V</span>
             </h1>
           </Link>
