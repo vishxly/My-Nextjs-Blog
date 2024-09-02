@@ -67,7 +67,7 @@ async function AuthorCard({ authorId }) {
         src={author?.photoURL}
         alt=""
       />
-      <h4 className="text-xs text-gray-500 sm:text-sm">{author?.name}</h4>
+      <h4 className="text-xs sm:text-sm">{author?.name}</h4>
     </div>
   );
 }
