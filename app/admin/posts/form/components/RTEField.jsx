@@ -41,7 +41,7 @@ export function RTEField() {
   };
 
   return (
-    <div className="dark:text-white">
+    <div className="dark:text-white ">
       <Editor
         apiKey="2zhf2cw2rpzcffhcfj8ui8hq6nm22cjny9miyay444w5vh2g"
         onInit={(_evt, editor) => (editorRef.current = editor)}

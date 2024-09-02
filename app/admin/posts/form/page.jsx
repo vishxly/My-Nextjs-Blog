@@ -32,25 +32,25 @@ export default function Page() {
   }, [updatePostId]);
 
   return (
-    <main className="w-full p-3 md:p-6 flex flex-col gap-3 dark:bg-black dark:text-white min-h-screen">
-      <div className="flex gap-3 md:gap-5 items-center flex-wrap">
+    <main className="flex flex-col w-full min-h-screen gap-3 p-3 md:p-6 dark:bg-black dark:text-white">
+      <div className="flex flex-wrap items-center gap-3 md:gap-5">
         {updatePostId && (
           <div className="flex">
-            <h3 className="text-white bg-orange-500 px-3 md:px-4 py-1 md:py-2 rounded-full text-xs font-bold">
+            <h3 className="px-3 py-1 text-xs font-bold text-white bg-orange-500 rounded-full md:px-4 md:py-2">
               Update
             </h3>
           </div>
         )}
         {!updatePostId && (
           <div className="flex">
-            <h3 className="text-white bg-green-500 px-3 md:px-4 py-1 md:py-2 rounded-full text-xs font-bold">
+            <h3 className="px-3 py-1 text-xs font-bold text-white bg-green-500 rounded-full md:px-4 md:py-2">
               Create
             </h3>
           </div>
         )}
         <h1 className="font-bold">Posts | Form</h1>
       </div>
-      <section className="flex flex-col md:flex-row gap-5">
+      <section className="flex flex-col gap-5 md:flex-row">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -60,7 +60,7 @@ export default function Page() {
               handleCreate();
             }
           }}
-          className="flex flex-col gap-2 bg-blue-50 rounded-xl p-4 md:p-7 w-full md:w-1/2 dark:bg-black dark:text-white"
+          className="flex flex-col w-full gap-2 p-4 bg-blue-50 rounded-xl md:p-7 md:w-1/2 dark:bg-black dark:text-black"
         >
           <FormFields
             data={data}
@@ -116,7 +116,7 @@ function InputField({ label, value, onChange, disabled, required }) {
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
-        className="px-4 py-2 rounded-full border bg-gray-50"
+        className="px-4 py-2 border rounded-full bg-gray-50"
         placeholder={`Enter ${label}`}
         type="text"
         onChange={onChange}
@@ -133,7 +133,7 @@ function ImagePreview({ imageURL, image }) {
   return (
     <div>
       <img
-        className="h-40 object-cover"
+        className="object-cover h-40"
         src={image ? URL.createObjectURL(image) : imageURL}
         alt=""
       />
@@ -146,7 +146,7 @@ function ImageUploadField({ setImage }) {
     <div className="flex flex-col gap-2">
       <label className="text-sm text-gray-500">Image</label>
       <input
-        className="px-4 py-2 rounded-full border bg-gray-50"
+        className="px-4 py-2 border rounded-full bg-gray-50"
         type="file"
         accept="image/*"
         onChange={(e) => {
@@ -161,12 +161,12 @@ function ImageUploadField({ setImage }) {
 function FormButtons({ isLoading, isDone, updatePostId, handleDelete, error }) {
   return (
     <>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-sm text-red-500">{error}</p>}
       {!isDone && (
         <button
           type="submit"
           disabled={isLoading || isDone}
-          className="bg-blue-500 rounded-full px-4 py-2 text-white"
+          className="px-4 py-2 text-white bg-blue-500 rounded-full"
         >
           {isLoading ? "Loading..." : updatePostId ? "Update" : "Create"}
         </button>
@@ -178,13 +178,13 @@ function FormButtons({ isLoading, isDone, updatePostId, handleDelete, error }) {
             handleDelete(updatePostId);
           }}
           disabled={isLoading || isDone}
-          className="bg-red-500 rounded-full px-4 py-2 text-white"
+          className="px-4 py-2 text-white bg-red-500 rounded-full"
         >
           {isLoading ? "Loading..." : "Delete"}
         </button>
       )}
       {isDone && (
-        <h3 className="text-green-500 font-bold text-center">
+        <h3 className="font-bold text-center text-green-500">
           Successfully {updatePostId ? "Updated" : "Created"}!
         </h3>
       )}
@@ -201,7 +201,7 @@ function SelectCategoryField() {
         Category <span className="text-red-500">*</span>
       </label>
       <select
-        className="px-4 py-2 rounded-full border bg-gray-50"
+        className="px-4 py-2 border rounded-full bg-gray-50"
         name="category"
         id="category"
         value={data?.categoryId}
@@ -229,7 +229,7 @@ function SelectAuthorField() {
         Authors <span className="text-red-500">*</span>
       </label>
       <select
-        className="px-4 py-2 rounded-full border bg-gray-50"
+        className="px-4 py-2 border rounded-full bg-gray-50"
         name="authorId"
         id="authorId"
         value={data?.authorId}
