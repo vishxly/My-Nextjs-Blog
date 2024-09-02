@@ -16,7 +16,7 @@ export default async function PostListView() {
   }
 
   return (
-    <section className="min-h-screen p-4 sm:p-6 md:p-10 dark:bg-black">
+    <section className="min-h-screen sm:p-6 md:p-10 dark:bg-black">
       <div className="h-[50rem] w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative">
         {/* Radial gradient for the container to give a faded look */}
         <div className="absolute pointer-events-none inset-0 dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
@@ -44,7 +44,7 @@ export function PostCard({ post }) {
             alt=""
           />
         </div>
-        <h1 className="text-3xl font-bold lg:text-3xl sm:text-xl">
+        <h1 className="text-xl font-bold lg:text-xl sm:text-xl">
           {post?.title}
         </h1>
         <div className="flex flex-row items-center justify-between">
