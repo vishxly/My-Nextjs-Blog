@@ -15,24 +15,23 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="px-4 py-3 border-b sm:px-7 dark:bg-black dark:border-gray-700 nav">
+    <nav className="px-4 py-4 border-b sm:px-8 dark:bg-black dark:border-gray-700">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <div className="w-8 h-8 mr-2 md:hidden"></div>
-          <Link href={"/"}>
-            <img className="h-8 rounded-md sm:h-10" src="/blog.jpg" alt="" />
-            {/* <h1 className='text-2xl '>BlogV</h1> */}
-            {/* <h1 className="inline-block pb-2 mt-5 mb-4 text-4xl font-bold text-indigo-600 transition-all duration-300 border-b-4 border-indigo-600 hover:text-indigo-800 hover:border-indigo-800 hover:scale-105">
-              Blog<span className="text-pink-500">V</span>
-            </h1> */}
+          <Link href={"/"} aria-label="Home">
+            <img
+              className="h-10 transition-transform duration-300 ease-in-out rounded-md sm:h-12 hover:scale-105"
+              src="/blog.jpg"
+              alt="BlogV Logo"
+            />
           </Link>
         </div>
 
-        <div className="items-center hidden gap-6 sm:flex">
+        <div className="items-center hidden gap-8 sm:flex">
           <NavLinks />
         </div>
 
-        <div className="items-center hidden gap-4 sm:flex">
+        <div className="items-center hidden gap-5 sm:flex">
           <ThemeToggle />
           <AuthContextProvider>
             <LoginButton />
@@ -40,17 +39,21 @@ export default function Header() {
         </div>
 
         <button
-          className="sm:hidden dark:text-white"
+          className="transition-transform duration-300 ease-in-out sm:hidden dark:text-white hover:scale-110"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle Menu"
         >
           <MenuIcon />
         </button>
       </div>
 
       {isMenuOpen && (
-        <div className="mt-4 sm:hidden">
+        <div
+          className="mt-4 transition-all duration-300 ease-in-out sm:hidden"
+          style={{ transform: isMenuOpen ? "translateY(0)" : "translateY(-10px)", opacity: isMenuOpen ? 1 : 0 }}
+        >
           <NavLinks />
-          <div className="flex items-center gap-4 mt-4">
+          <div className="flex items-center gap-4 mt-6">
             <ThemeToggle />
             <AuthContextProvider>
               <LoginButton />
@@ -64,21 +67,21 @@ export default function Header() {
 
 function NavLinks() {
   return (
-    <ul className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6 sm:items-center">
-      <Link href={"/"}>
-        <li className="flex items-center gap-2 dark:text-white">
+    <ul className="flex flex-col items-start gap-4 sm:flex-row sm:gap-8 sm:items-center">
+      <Link href={"/"} aria-label="Home">
+        <li className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 dark:text-white hover:text-indigo-500 dark:hover:text-indigo-300">
           <HomeIcon fontSize="small" />
           Home
         </li>
       </Link>
-      <Link href={"/categories"}>
-        <li className="flex items-center gap-2 dark:text-white">
+      <Link href={"/categories"} aria-label="Categories">
+        <li className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 dark:text-white hover:text-indigo-500 dark:hover:text-indigo-300">
           <CategoryIcon fontSize="small" />
           Categories
         </li>
       </Link>
-      <Link href={"/contact"}>
-        <li className="flex items-center gap-2 dark:text-white">
+      <Link href={"/contact"} aria-label="Contact Us">
+        <li className="flex items-center gap-2 text-lg font-medium transition-colors duration-300 dark:text-white hover:text-indigo-500 dark:hover:text-indigo-300">
           <ContactMailIcon fontSize="small" />
           Contact Us
         </li>
