@@ -17,23 +17,23 @@ export default function PostListView() {
   }
 
   return (
-    <section className="dark:bg-gray-900 min-h-screen">
+    <section className="dark:bg-black min-h-screen">
       <table className="w-full post-table">
         <thead>
           <tr>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white">
+            <th className="border px-2 py-2 bg-blue-50 dark:bg-black dark:text-white">
               Sr.
             </th>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white">
+            <th className="border px-2 py-2 bg-blue-50 dark:bg-black dark:text-white">
               Image
             </th>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white">
+            <th className="border px-2 py-2 bg-blue-50 dark:bg-black dark:text-white">
               Title
             </th>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white">
+            <th className="border px-2 py-2 bg-blue-50 dark:bg-black dark:text-white">
               Slug
             </th>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white">
+            <th className="border px-2 py-2 bg-blue-50 dark:bg-black dark:text-white">
               Action
             </th>
           </tr>
@@ -41,7 +41,7 @@ export default function PostListView() {
         <tbody>
           {data?.map((item, key) => {
             return (
-              <tr key={item.id} className="dark:bg-gray-800 dark:text-white">
+              <tr key={item.id} className="dark:bg-black dark:text-white">
                 <td className="border px-4 py-2 dark:border-gray-700">
                   {key + 1}
                 </td>

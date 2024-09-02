@@ -14,12 +14,17 @@ export default async function PostListView() {
       </div>
     );
   }
+
   return (
     <section className="min-h-screen p-4 sm:p-6 md:p-10 dark:bg-black">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-5">
-        {posts?.map((post, key) => {
-          return <PostCard post={post} key={key} />;
-        })}
+      <div className="h-[50rem] w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative">
+        {/* Radial gradient for the container to give a faded look */}
+        <div className="absolute pointer-events-none inset-0 dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+        <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-5">
+          {posts?.map((post, key) => {
+            return <PostCard post={post} key={key} />;
+          })}
+        </div>
       </div>
     </section>
   );
@@ -30,7 +35,7 @@ export function PostCard({ post }) {
     <Link href={`/posts/${post?.id}`}>
       <div className="flex flex-col gap-3 p-4 rounded sm:p-5 dark:bg-black dark:text-white">
         <div className="relative">
-          <div className="absolute flex justify-end w-full p-2 sm:p-3">
+          <div className="absolute flex justify-end w-full p-2 sm:p3">
             <CategoryCard categoryId={post?.categoryId} />
           </div>
           <img

@@ -3,7 +3,7 @@ import Head from "next/head";
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen dark:bg-gray-900 dark:text-white">
+    <div className="min-h-screen dark:bg-black dark:text-white">
       <Head>
         <title>Contact Me | Vishal Yadav</title>
         <meta name="description" content="Get in touch with Your Name" />
@@ -14,7 +14,7 @@ export default function ContactPage() {
       </Head>
 
       <main className="container mx-auto px-4 py-16">
-        <div className="max-w-3xl mx-auto dark:bg-gray-900 dark:text-white rounded-lg shadow-2xl overflow-hidden">
+        <div className="max-w-3xl mx-auto dark:bg-black dark:text-white rounded-lg shadow-2xl overflow-hidden">
           <div className="md:flex">
             <div className="md:flex-shrink-0">
               <img

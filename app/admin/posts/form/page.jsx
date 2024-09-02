@@ -32,7 +32,7 @@ export default function Page() {
   }, [updatePostId]);
 
   return (
-    <main className="w-full p-3 md:p-6 flex flex-col gap-3 dark:bg-gray-900 dark:text-white min-h-screen">
+    <main className="w-full p-3 md:p-6 flex flex-col gap-3 dark:bg-black dark:text-white min-h-screen">
       <div className="flex gap-3 md:gap-5 items-center flex-wrap">
         {updatePostId && (
           <div className="flex">
@@ -60,7 +60,7 @@ export default function Page() {
               handleCreate();
             }
           }}
-          className="flex flex-col gap-2 bg-blue-50 rounded-xl p-4 md:p-7 w-full md:w-1/2 dark:bg-gray-900 dark:text-white"
+          className="flex flex-col gap-2 bg-blue-50 rounded-xl p-4 md:p-7 w-full md:w-1/2 dark:bg-black dark:text-white"
         >
           <FormFields
             data={data}

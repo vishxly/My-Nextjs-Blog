@@ -16,22 +16,22 @@ export default function AuthorsListView() {
   }
   return (
     <section>
-      <table className="w-full dark:bg-gray-900">
+      <table className="w-full dark:bg-black">
         <thead>
           <tr>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white dark:border-gray-700">
+            <th className="px-2 py-2 border bg-blue-50 dark:bg-black dark:text-white dark:border-gray-700">
               Sr.
             </th>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white dark:border-gray-700">
+            <th className="px-2 py-2 border bg-blue-50 dark:bg-black dark:text-white dark:border-gray-700">
               Photo
             </th>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white dark:border-gray-700">
+            <th className="px-2 py-2 border bg-blue-50 dark:bg-black dark:text-white dark:border-gray-700">
               Name
             </th>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white dark:border-gray-700">
+            <th className="px-2 py-2 border bg-blue-50 dark:bg-black dark:text-white dark:border-gray-700">
               Email
             </th>
-            <th className="border px-2 py-2 bg-blue-50 dark:bg-blue-900 dark:text-white dark:border-gray-700">
+            <th className="px-2 py-2 border bg-blue-50 dark:bg-black dark:text-white dark:border-gray-700">
               Action
             </th>
           </tr>
@@ -40,16 +40,16 @@ export default function AuthorsListView() {
           {data?.map((item, key) => {
             return (
               <tr className="dark:text-white">
-                <td className="border px-4 py-2">{key + 1}</td>
-                <td className="border px-4 py-2">
+                <td className="px-4 py-2 border">{key + 1}</td>
+                <td className="px-4 py-2 border">
                   {" "}
                   <img className="h-10" src={item?.photoURL} alt="" />{" "}
                 </td>
-                <td className="border px-4 py-2">{item?.name}</td>
-                <td className="border px-4 py-2">{item?.email}</td>
-                <td className="border px-4 py-2">
+                <td className="px-4 py-2 border">{item?.name}</td>
+                <td className="px-4 py-2 border">{item?.email}</td>
+                <td className="px-4 py-2 border">
                   <Link href={`/admin/authors/form?id=${item?.id}`}>
-                    <button className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm">
+                    <button className="px-3 py-1 text-sm text-white bg-blue-500 rounded-full">
                       Action
                     </button>
                   </Link>

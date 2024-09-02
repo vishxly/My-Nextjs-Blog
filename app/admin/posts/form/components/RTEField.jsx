@@ -22,7 +22,7 @@ export function RTEField() {
 
     if (editorRef.current) {
       // Automatically format content when pasted
-      editorRef.current.on('PastePostProcess', (event) => {
+      editorRef.current.on("PastePostProcess", (event) => {
         event.content = formatContent(event.content);
       });
     }
@@ -30,10 +30,10 @@ export function RTEField() {
 
   const formatContent = (content) => {
     // Use Highlight.js to automatically highlight code blocks
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement("div");
     tempDiv.innerHTML = content;
 
-    tempDiv.querySelectorAll('pre code').forEach((block) => {
+    tempDiv.querySelectorAll("pre code").forEach((block) => {
       hljs.highlightBlock(block);
     });
 
@@ -45,36 +45,54 @@ export function RTEField() {
       <Editor
         apiKey="2zhf2cw2rpzcffhcfj8ui8hq6nm22cjny9miyay444w5vh2g"
         onInit={(_evt, editor) => (editorRef.current = editor)}
-        initialValue={data?.content || "<p>This is the initial content of the editor.</p>"}
+        initialValue={
+          data?.content || "<p>This is the initial content of the editor.</p>"
+        }
         init={{
           height: 500,
           menubar: false,
           plugins: [
-            "advlist", "autolink", "lists", "link", "image", "charmap", "preview",
-            "anchor", "searchreplace", "visualblocks", "code", "fullscreen",
-            "insertdatetime", "media", "table", "code", "help", "wordcount",
-            "codesample"
+            "advlist",
+            "autolink",
+            "lists",
+            "link",
+            "image",
+            "charmap",
+            "preview",
+            "anchor",
+            "searchreplace",
+            "visualblocks",
+            "code",
+            "fullscreen",
+            "insertdatetime",
+            "media",
+            "table",
+            "code",
+            "help",
+            "wordcount",
+            "codesample",
           ],
-          toolbar: 
+          toolbar:
             "undo redo | blocks | " +
             "bold italic forecolor | alignleft aligncenter " +
             "alignright alignjustify | bullist numlist outdent indent | " +
             "codesample | removeformat | help",
-          content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+          content_style:
+            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           paste_data_images: true, // Allows image pasting directly
           paste_as_text: false, // Keeps formatting from pasted content
           automatic_uploads: true,
           paste_enable_default_filters: false,
           paste_postprocess: (pluginApi, args) => {
             args.node.innerHTML = formatContent(args.node.innerHTML);
-          }
+          },
         }}
         onEditorChange={handleChange}
       />
       {/* <button onClick={log}>Log editor content</button> */}
 
       {/* Preview Section */}
-      <div className="p-4 mt-4 bg-gray-100 border rounded dark:bg-gray-800">
+      <div className="p-4 mt-4 bg-gray-100 border rounded dark:bg-black">
         <h3 className="mb-2 text-lg font-semibold">Live Preview</h3>
         <div
           className="preview-content"
@@ -84,29 +102,6 @@ export function RTEField() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import { useEffect, useState } from "react";
 // import dynamic from "next/dynamic";

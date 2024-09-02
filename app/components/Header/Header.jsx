@@ -20,11 +20,11 @@ export default function Header() {
         <div className="flex items-center">
           <div className="w-8 h-8 mr-2 md:hidden"></div>
           <Link href={"/"}>
-            {/* <img className="h-8 sm:h-10" src="/logo.png" alt="" /> */}
+            <img className="h-8 rounded-md sm:h-10" src="/blog.jpg" alt="" />
             {/* <h1 className='text-2xl '>BlogV</h1> */}
-            <h1 className="inline-block pb-2 mt-5 mb-4 text-4xl font-bold text-indigo-600 transition-all duration-300 border-b-4 border-indigo-600 hover:text-indigo-800 hover:border-indigo-800 hover:scale-105">
+            {/* <h1 className="inline-block pb-2 mt-5 mb-4 text-4xl font-bold text-indigo-600 transition-all duration-300 border-b-4 border-indigo-600 hover:text-indigo-800 hover:border-indigo-800 hover:scale-105">
               Blog<span className="text-pink-500">V</span>
-            </h1>
+            </h1> */}
           </Link>
         </div>
 

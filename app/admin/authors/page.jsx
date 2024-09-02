@@ -4,17 +4,17 @@ import AuthorsListView from './components/AuthorsListView';
 
 export default function Page() {
     return (
-        <main className="min-h-screen flex flex-col dark:bg-gray-900 w-full">
-            <div className='flex-shrink-0 p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 border-b dark:border-gray-700'>
-                <h1 className="text-xl sm:text-2xl font-bold dark:text-white">Authors</h1>
+        <main className="flex flex-col w-full min-h-screen dark:bg-black">
+            <div className='flex flex-col items-start justify-between flex-shrink-0 gap-4 p-4 border-b sm:p-6 sm:flex-row sm:items-center sm:gap-0 dark:border-gray-700'>
+                <h1 className="text-xl font-bold sm:text-2xl dark:text-white">Authors</h1>
                 <Link href={'/admin/authors/form'}>
-                    <button className="w-full sm:w-auto flex justify-center gap-2 items-center bg-blue-500 hover:bg-blue-600 px-4 py-2 text-white rounded-full font-bold transition-colors duration-200">
+                    <button className="flex items-center justify-center w-full gap-2 px-4 py-2 font-bold text-white transition-colors duration-200 bg-blue-500 rounded-full sm:w-auto hover:bg-blue-600">
                         <CirclePlus size={20} />
                         <span>Add</span>
                     </button>
                 </Link>
             </div>
-            <div className="flex-grow overflow-auto p-4 sm:p-6">
+            <div className="flex-grow p-4 overflow-auto sm:p-6">
                 <AuthorsListView />
             </div>
         </main>
