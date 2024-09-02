@@ -27,7 +27,7 @@ function InnerLayout({ children }) {
   if (!data) {
     return (
       <div className="flex items-center justify-center h-screen dark:bg-black dark:text-white">
-        <div className="p-8 text-center rounded-lg shadow-lg dark:bg-black dark:text-white">
+        <div className="p-8 text-center bg-black rounded-lg shadow-lg dark:bg-white dark:text-white">
           <h1 className="mb-4 text-2xl font-bold">Access Denied</h1>
           <p className="text-lg">You are not an admin</p>
           <div className="mt-6">
