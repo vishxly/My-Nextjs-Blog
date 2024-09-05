@@ -7,7 +7,9 @@ import "highlight.js/styles/github-dark.css";
 export function RTEField() {
   const { data, handleData } = usePostForm();
   const editorRef = useRef(null);
-  const [previewContent, setPreviewContent] = useState("<p>This is the initial content of the editor.</p>"); // Initialize with default content
+  const [previewContent, setPreviewContent] = useState(
+    "<p>This is the initial content of the editor.</p>"
+  ); // Initialize with default content
   const [activeTab, setActiveTab] = useState("editor");
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
@@ -72,7 +74,7 @@ export function RTEField() {
 
   const handleChange = (content) => {
     handleData("content", content);
-    setPreviewContent(content);  // Update the content state
+    setPreviewContent(content); // Update the content state
     analyzeContent(content);
     setAutoSaveStatus("Saving...");
     setTimeout(() => setAutoSaveStatus("Saved"), 1000);
@@ -127,6 +129,9 @@ export function RTEField() {
         <Editor
           apiKey="2zhf2cw2rpzcffhcfj8ui8hq6nm22cjny9miyay444w5vh2g"
           onInit={(_evt, editor) => (editorRef.current = editor)}
+          initialValue={
+            data?.content || "<p>This is the initial content of the editor.</p>"
+          }
           value={previewContent} // Use the content state here
           init={{
             height: 500,
