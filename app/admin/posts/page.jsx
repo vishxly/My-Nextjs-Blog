@@ -4,7 +4,7 @@ import PostListView from "./components/PostListView";
 
 export default function Page() {
   return (
-    <main className="flex flex-col w-full gap-6 p-6 dark:bg-black dark:text-white">
+    <main className="flex flex-col w-full gap-6 p-6 overflow-hidden dark:bg-black dark:text-white">
       <div className="flex items-center justify-between">
         <h1 className="font-bold dark:text-white">Posts</h1>
         <Link href={"/admin/posts/form"}>
