@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { usePostForm } from "../contexts/PostFormContext";
 import hljs from "highlight.js";
@@ -7,7 +7,7 @@ import "highlight.js/styles/github-dark.css";
 export function RTEField() {
   const { data, handleData } = usePostForm();
   const editorRef = useRef(null);
-  const [previewContent, setPreviewContent] = useState("");
+  const [previewContent, setPreviewContent] = useState("<p>This is the initial content of the editor.</p>"); // Initialize with default content
   const [activeTab, setActiveTab] = useState("editor");
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
@@ -16,38 +16,29 @@ export function RTEField() {
   const [contentScore, setContentScore] = useState(0);
   const [showAnalysis, setShowAnalysis] = useState(false);
 
-  const handleChange = (content) => {
-    handleData("content", content);
-    setPreviewContent(content);
-    analyzeContent(content);
-    setAutoSaveStatus("Saving...");
-    setTimeout(() => setAutoSaveStatus("Saved"), 1000); // Simulated auto-save
-  };
-
-  const analyzeContent = (content) => {
-    const words = content.trim().split(/\s+/);
-    setWordCount(words.length);
-    setCharCount(content.length);
-    setReadingTime(Math.ceil(words.length / 200)); // Assuming 200 words per minute reading speed
-
-    // Simple content quality score based on length and variety
-    const uniqueWords = new Set(words).size;
-    const score = Math.min(
-      100,
-      Math.floor((uniqueWords / words.length) * 100) +
-        Math.min(50, words.length / 10)
-    );
-    setContentScore(score);
-  };
-
   useEffect(() => {
-    hljs.configure({
-      languages: ["javascript", "python", "ruby", "go", "java", "html", "css"],
-    });
-
     if (editorRef.current) {
-      editorRef.current.on("PastePostProcess", (event) => {
-        event.content = formatContent(event.content);
+      const editor = editorRef.current.editor;
+
+      hljs.configure({
+        languages: [
+          "javascript",
+          "python",
+          "ruby",
+          "go",
+          "java",
+          "html",
+          "css",
+        ],
+      });
+
+      editor.ui.registry.addButton("customformat", {
+        text: "Format Content",
+        onAction: formatEntireContent,
+      });
+
+      editor.on("PastePreProcess", (e) => {
+        e.content = formatContent(e.content);
       });
     }
   }, []);
@@ -60,7 +51,6 @@ export function RTEField() {
       hljs.highlightBlock(block);
     });
 
-    // Auto-detect and format links
     const linkRegex =
       /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
     tempDiv.innerHTML = tempDiv.innerHTML.replace(
@@ -71,31 +61,53 @@ export function RTEField() {
     return tempDiv.innerHTML;
   };
 
-  const customPlugins = useMemo(
-    () => [
-      {
-        name: "autodetect",
-        init: (editor) => {
-          editor.on("KeyUp", () => {
-            const content = editor.getContent();
-            editor.setContent(formatContent(content));
-          });
-        },
-      },
-    ],
-    []
-  );
+  const formatEntireContent = () => {
+    if (editorRef.current) {
+      const editor = editorRef.current.editor;
+      const content = editor.getContent();
+      const formattedContent = formatContent(content);
+      editor.setContent(formattedContent);
+    }
+  };
+
+  const handleChange = (content) => {
+    handleData("content", content);
+    setPreviewContent(content);  // Update the content state
+    analyzeContent(content);
+    setAutoSaveStatus("Saving...");
+    setTimeout(() => setAutoSaveStatus("Saved"), 1000);
+  };
+
+  const analyzeContent = (content) => {
+    const words = content.trim().split(/\s+/);
+    setWordCount(words.length);
+    setCharCount(content.length);
+    setReadingTime(Math.ceil(words.length / 200));
+
+    const uniqueWords = new Set(words).size;
+    const score = Math.min(
+      100,
+      Math.floor((uniqueWords / words.length) * 100) +
+        Math.min(50, words.length / 10)
+    );
+    setContentScore(score);
+  };
+
+  const handleTabChange = (tab) => {
+    // No need to manually sync content here as it's already in state
+    setActiveTab(tab);
+  };
 
   return (
     <div className="dark:text-white">
       <div className="mb-4">
         <button
-          className={` text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 ${
+          className={`text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 ${
             activeTab === "editor"
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-gray-700"
           }`}
-          onClick={() => setActiveTab("editor")}
+          onClick={() => handleTabChange("editor")}
         >
           Editor
         </button>
@@ -105,7 +117,7 @@ export function RTEField() {
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-gray-700"
           }`}
-          onClick={() => setActiveTab("preview")}
+          onClick={() => handleTabChange("preview")}
         >
           Preview
         </button>
@@ -115,9 +127,7 @@ export function RTEField() {
         <Editor
           apiKey="2zhf2cw2rpzcffhcfj8ui8hq6nm22cjny9miyay444w5vh2g"
           onInit={(_evt, editor) => (editorRef.current = editor)}
-          initialValue={
-            data?.content || "<p>Start writing your content here...</p>"
-          }
+          value={previewContent} // Use the content state here
           init={{
             height: 500,
             menubar: false,
@@ -141,12 +151,13 @@ export function RTEField() {
               "help",
               "wordcount",
               "codesample",
-              "undo"
+              "emoticons",
+              "table",
             ],
             toolbar:
-              "undo redo | blocks | bold italic forecolor | alignleft aligncenter " +
-              "alignright alignjustify | bullist numlist outdent indent | " +
-              "codesample | link image | removeformat | help",
+              "undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | " +
+              "bullist numlist outdent indent | removeformat | codesample | table | link image media | " +
+              "emoticons | help",
             content_style:
               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
             paste_data_images: true,
@@ -205,9 +216,6 @@ export function RTEField() {
         >
           Content Analysis
         </button>
-        {/* <button className="px-4 py-2 text-gray-700 bg-gray-200 rounded">
-          Export as PDF
-        </button> */}
       </div>
 
       {showAnalysis && (
@@ -231,54 +239,3 @@ export function RTEField() {
     </div>
   );
 }
-// import { useEffect, useState } from "react";
-// import dynamic from "next/dynamic";
-// import "react-quill/dist/quill.snow.css";
-// import { usePostForm } from "../contexts/PostFormContext";
-// import hljs from "highlight.js";
-// import "highlight.js/styles/monokai-sublime.css"; // Import the highlight.js theme
-
-// const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
-// const modules = {
-//   toolbar: {
-//     container: [
-//       [{ header: [1, 2, false] }],
-//       ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
-//       [{ size: ["extra-small", "small", "medium", "large"] }],
-//       [{ list: "ordered" }, { list: "bullet" }],
-//       ["link", "image", "video"],
-//       [{ color: [] }, { background: [] }],
-//       ["clean"],
-//     ],
-//   },
-//   syntax: {
-//     highlight: (text) => hljs.highlightAuto(text).value, // Enable syntax highlighting
-//   },
-// };
-
-// export function RTEField() {
-//   const { data, handleData } = usePostForm();
-
-//   const handleChange = (value) => {
-//     handleData("content", value);
-//   };
-
-//   useEffect(() => {
-//     // Ensure highlight.js is loaded and configured before rendering the editor
-//     hljs.configure({
-//       languages: ["javascript", "python", "ruby", "go", "java", "html", "css"],
-//     });
-//   }, []);
-
-//   return (
-//     <div className="dark:text-white">
-//       <ReactQuill
-//         value={data?.content}
-//         onChange={handleChange}
-//         modules={modules}
-//         placeholder="Enter your content here..."
-//       />
-//     </div>
-//   );
-// }
