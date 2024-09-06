@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "./components/Header/Header";
 import "highlight.js/styles/monokai-sublime.css";
 import { icons } from "lucide-react";
+import AuthContextProvider from "@/lib/contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -17,8 +18,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <AuthContextProvider>
         <Header />
         {children}
+        </AuthContextProvider>
       </body>
     </html>
   );

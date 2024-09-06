@@ -1,4 +1,3 @@
-// app/posts/[postId]/page.jsx
 import { getAuthor } from "@/lib/firebase/author/read_server";
 import { getCategory } from "@/lib/firebase/category/read_server";
 import { getPost } from "@/lib/firebase/post/read_server";
@@ -38,7 +37,7 @@ export default async function Page({ params }) {
             {post?.timestamp?.toDate()?.toLocaleDateString()}
           </h5>
         </div>
-        <PostContent content={post?.content} />
+        <PostContent post={post} />
       </section>
     </main>
   );
