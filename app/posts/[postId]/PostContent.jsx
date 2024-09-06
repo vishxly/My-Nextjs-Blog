@@ -96,7 +96,7 @@ export default function PostContent({ post }) {
             onClick={handleLike}
             className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
               user && likes.includes(user.uid)
-                ? "bg-blue-100 text-blue-600 dark:bg-black dark:text-blue-300"
+                ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
                 : "bg-gray-100 text-gray-600 dark:bg-black dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900"
             }`}
           >
