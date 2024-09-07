@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import hljs from "highlight.js";
-import { useAuth } from "@/lib/contexts/AuthContext"; // Adjust this import pat
+import { useAuth } from "@/lib/contexts/AuthContext";
 import {
   toggleLike,
   addComment,
@@ -10,12 +10,16 @@ import {
   deleteComment,
   toggleCommentLike,
 } from "@/lib/firebase/post/interactions";
+import { getUserInfo } from "@/lib/firebase/userUtils";
 import { ThumbsUp, Send, Trash2 } from "lucide-react";
+
 export default function PostContent({ post }) {
   const { user, handleSignInWithGoogle, isLoading } = useAuth();
   const [likes, setLikes] = useState(post.likes || []);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [likeUsers, setLikeUsers] = useState([]);
+  const [userInfoLoading, setUserInfoLoading] = useState(true);
 
   useEffect(() => {
     hljs.highlightAll();
@@ -24,22 +28,57 @@ export default function PostContent({ post }) {
   useEffect(() => {
     const fetchComments = async () => {
       const fetchedComments = await getComments(post.id);
-      setComments(fetchedComments);
+      const commentsWithUserInfo = await Promise.all(
+        fetchedComments.map(async (comment) => {
+          const userInfo = await getUserInfo(comment.userId);
+          return { ...comment, user: userInfo };
+        })
+      );
+      setComments(commentsWithUserInfo);
     };
     fetchComments();
   }, [post.id]);
+
+  useEffect(() => {
+    const fetchLikeUsers = async () => {
+      setUserInfoLoading(true);
+      try {
+        const likeUserInfo = await Promise.all(
+          likes.map(async (userId) => await getUserInfo(userId))
+        );
+        setLikeUsers(likeUserInfo);
+      } catch (error) {
+        console.error("Error fetching like users:", error);
+      } finally {
+        setUserInfoLoading(false);
+      }
+    };
+    fetchLikeUsers();
+  }, [likes]);
 
   const handleLike = async () => {
     if (!user) {
       await handleSignInWithGoogle();
       return;
     }
-    await toggleLike(post.id, user.uid);
-    setLikes((prevLikes) =>
-      prevLikes.includes(user.uid)
-        ? prevLikes.filter((id) => id !== user.uid)
-        : [...prevLikes, user.uid]
-    );
+    setUserInfoLoading(true);
+    try {
+      await toggleLike(post.id, user.uid);
+      const updatedLikes = likes.includes(user.uid)
+        ? likes.filter((id) => id !== user.uid)
+        : [...likes, user.uid];
+      setLikes(updatedLikes);
+
+      // Fetch user info for all likes, including the new one
+      const allLikeUserInfo = await Promise.all(
+        updatedLikes.map(async (userId) => await getUserInfo(userId))
+      );
+      setLikeUsers(allLikeUserInfo);
+    } catch (error) {
+      console.error("Error handling like:", error);
+    } finally {
+      setUserInfoLoading(false);
+    }
   };
 
   const handleAddComment = async () => {
@@ -51,7 +90,13 @@ export default function PostContent({ post }) {
     await addComment(post.id, user.uid, newComment);
     setNewComment("");
     const updatedComments = await getComments(post.id);
-    setComments(updatedComments);
+    const commentsWithUserInfo = await Promise.all(
+      updatedComments.map(async (comment) => {
+        const userInfo = await getUserInfo(comment.userId);
+        return { ...comment, user: userInfo }; // Fixed: use userInfo instead of user
+      })
+    );
+    setComments(commentsWithUserInfo);
   };
 
   const handleDeleteComment = async (commentId) => {
@@ -103,6 +148,10 @@ export default function PostContent({ post }) {
             <ThumbsUp size={18} />
             <span>{likes.length}</span>
           </button>
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Liked by:{" "}
+            {likeUsers.map((user) => user.name || "Unknown User").join(", ")}
+          </div>
         </div>
 
         <div className="mt-8">
@@ -134,6 +183,9 @@ export default function PostContent({ post }) {
                 key={comment.id}
                 className="p-4 rounded-lg bg-gray-50 dark:bg-black"
               >
+                <div className="mb-2 font-semibold">
+                  {comment.user.name || "Unknown User"}
+                </div>
                 <p className="text-gray-800 dark:text-gray-200">
                   {comment.content}
                 </p>
@@ -147,7 +199,7 @@ export default function PostContent({ post }) {
                     }`}
                   >
                     <ThumbsUp size={14} />
-                    <span>{comment.likes.length}</span>
+                    <span>{comment.likes ? comment.likes.length : 0}</span>
                   </button>
                   {user && user.uid === comment.userId && (
                     <button

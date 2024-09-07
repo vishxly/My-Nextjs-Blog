@@ -14,24 +14,24 @@ export default function LoginButton() {
     } = useAuth();
 
     if (isLoading) {
-        return <div className="animate-pulse bg-gray-200 h-10 w-32 rounded-full"></div>
+        return <div className="w-32 h-10 bg-gray-200 rounded-full animate-pulse"></div>
     }
 
     if (user) {
         return (
-            <div className="flex gap-4 items-center">
+            <div className="flex items-center gap-4">
                 <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg"
+                    className="flex items-center gap-2 px-4 py-2 text-white transition-colors duration-300 bg-red-500 rounded-full shadow-md hover:bg-red-600 hover:shadow-lg"
                 >
                     <LogOut size={18} />
                     Logout
                 </button>
                 <Link href='/admin'>
-                    <div className="flex items-center gap-3 bg-blue-100 hover:bg-blue-200 px-4 py-2 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg">
-                        <img className="h-8 w-8 rounded-full object-cover border-2 border-blue-300" src={user?.photoURL} alt="" />
+                    <div className="flex items-center gap-3 px-4 py-2 transition-colors duration-300 bg-blue-100 rounded-full shadow-md hover:bg-blue-200 hover:shadow-lg">
+                        <img className="object-cover w-8 h-8 border-2 border-blue-300 rounded-full" src={user?.photoURL} alt="" />
                         <div className="hidden sm:block">
-                            <h1 className="font-semibold text-sm text-gray-800">{user?.displayName}</h1>
+                            <h1 className="text-sm font-semibold text-gray-800">{user?.displayName}</h1>
                             <h2 className="text-xs text-gray-500">{user?.email}</h2>
                         </div>
                     </div>
@@ -43,7 +43,7 @@ export default function LoginButton() {
     return (
         <button
             onClick={handleSignInWithGoogle}
-            className="flex items-center gap-3 bg-white hover:bg-gray-100 text-gray-800 font-semibold px-6 py-2 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg border border-gray-300"
+            className="flex items-center gap-3 px-6 py-2 font-semibold text-gray-800 transition-colors duration-300 bg-white border border-gray-300 rounded-full shadow-md hover:bg-gray-100 hover:shadow-lg"
         >
             <img className='h-5' src="/google.png" alt="Google logo" />
             <span className="hidden sm:inline">Sign in with Google</span>
