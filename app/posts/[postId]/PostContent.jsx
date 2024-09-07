@@ -84,7 +84,7 @@ export default function PostContent({ post }) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-black">
+    <div className="flex flex-col gap-4">
       <div className="p-6">
         <div
           className="prose dark:prose-invert max-w-none"
