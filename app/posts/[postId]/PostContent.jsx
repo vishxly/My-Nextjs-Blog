@@ -24,11 +24,30 @@ export default function PostContent({ post }) {
   const [newComment, setNewComment] = useState("");
   const [likeUsers, setLikeUsers] = useState([]);
   const [userInfoLoading, setUserInfoLoading] = useState(true);
+  const [replyCounts, setReplyCounts] = useState({});
 
   const [repliesVisible, setRepliesVisible] = useState({});
   const [replies, setReplies] = useState({});
   const [newReply, setNewReply] = useState({});
 
+  const getReplyCount = (commentId) => {
+    return replyCounts[commentId] || 0;
+  };
+  const handleAddReplyWithCount = async (commentId) => {
+    await handleAddReply(commentId);
+    setReplyCounts((prev) => ({
+      ...prev,
+      [commentId]: (prev[commentId] || 0) + 1,
+    }));
+  };
+
+  const handleDeleteReplyWithCount = async (commentId, replyId) => {
+    await handleDeleteReply(commentId, replyId);
+    setReplyCounts((prev) => ({
+      ...prev,
+      [commentId]: Math.max((prev[commentId] || 0) - 1, 0),
+    }));
+  };
   const handleToggleReplies = async (commentId) => {
     setRepliesVisible((prev) => ({ ...prev, [commentId]: !prev[commentId] }));
     if (!replies[commentId]) {
@@ -40,6 +59,10 @@ export default function PostContent({ post }) {
         })
       );
       setReplies((prev) => ({ ...prev, [commentId]: repliesWithUserInfo }));
+      setReplyCounts((prev) => ({
+        ...prev,
+        [commentId]: repliesWithUserInfo.length,
+      }));
     }
   };
 
@@ -59,6 +82,10 @@ export default function PostContent({ post }) {
       })
     );
     setReplies((prev) => ({ ...prev, [commentId]: repliesWithUserInfo }));
+    setReplyCounts((prev) => ({
+      ...prev,
+      [commentId]: repliesWithUserInfo.length,
+    }));
   };
 
   const handleDeleteReply = async (commentId, replyId) => {
@@ -66,6 +93,10 @@ export default function PostContent({ post }) {
     setReplies((prev) => ({
       ...prev,
       [commentId]: prev[commentId].filter((reply) => reply.id !== replyId),
+    }));
+    setReplyCounts((prev) => ({
+      ...prev,
+      [commentId]: Math.max((prev[commentId] || 0) - 1, 0),
     }));
   };
 
@@ -222,136 +253,130 @@ export default function PostContent({ post }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="p-6">
-        <div
-          className="prose dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+      <div className="p-8 space-y-8">
+        {/* Post Content */}
+        <div className="prose dark:prose-invert max-w-none">
+          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        </div>
 
-        <div className="flex items-center justify-between mt-6">
+        {/* Like Section */}
+        <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={handleLike}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+            className={`group flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
               user && likes.includes(user.uid)
                 ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
-                : "bg-gray-100 text-gray-600 dark:bg-black dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900"
+                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/50"
             }`}
           >
-            <ThumbsUp size={18} />
-            <span>{likes.length}</span>
+            <ThumbsUp
+              size={20}
+              className="transition-transform group-hover:scale-125"
+            />
+            <span className="font-semibold">{likes.length}</span>
           </button>
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Liked by:{" "}
-            {likeUsers.map((user, index) => (
-              <span key={user.id}>
-                {formatUserName(user)}
-                {index < likeUsers.length - 1 ? ", " : ""}
-              </span>
-            ))}
+          <div className="text-sm italic text-gray-500 dark:text-gray-400">
+            Appreciated by: {likes.map((user) => user.name).join(", ")}
           </div>
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="space-y-4">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Add a comment..."
-              className="flex-grow p-2 bg-gray-100 rounded-lg dark:bg-black"
-            />
-            <button
-              onClick={handleAddComment}
-              className="px-4 py-2 text-white bg-blue-600 rounded-lg"
-            >
-              <Send size={18} />
-            </button>
-          </div>
-          <div>
-            {comments.length > 0 ? (
-              comments.map((comment) => (
-                <div
-                  key={comment.id}
-                  className="p-4 space-y-2 border rounded-lg dark:border-gray-800"
-                >
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm font-semibold">
-                      {formatUserName(comment.user)}
-                    </span>
-                    <p className="text-gray-800 dark:text-gray-200">
-                      {comment.content}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <button
-                        onClick={() => handleCommentLike(comment.id)}
-                        className={`flex items-center gap-2 px-2 py-1 rounded-full transition-colors ${
-                          user && comment.likes.includes(user.uid)
-                            ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
-                            : "bg-gray-100 text-gray-600 dark:bg-black dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900"
-                        }`}
-                      >
-                        <ThumbsUp size={14} />
-                        <span>{comment.likes.length}</span>
-                      </button>
-                      {user?.uid === comment.userId && (
-                        <button
-                          onClick={() => handleDeleteComment(comment.id)}
-                          className="text-red-600 dark:text-red-300 hover:text-red-400"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      )}
-                    </div>
-                  </div>
+      {/* Comments Section */}
+      <div className="p-8 space-y-6 bg-gray-50 dark:bg-black dark:text-white">
+        <h3 className="mb-4 text-2xl font-bold text-gray-800 dark:text-gray-200">
+          Comments
+        </h3>
 
-                  <p className="text-gray-600 dark:text-gray-300">
-                    {comment.text}
-                  </p>
-                  <div>
+        {/* New Comment Input */}
+        <div className="flex items-center gap-4">
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Share your thoughts..."
+            className="flex-grow p-4 transition-all duration-300 rounded-lg shadow-inner dark:bg-black focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={handleAddComment}
+            className="p-4 text-white transition-all duration-300 bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <Send size={24} />
+          </button>
+        </div>
+
+        {/* Comments List */}
+        <div className="space-y-6">
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <div
+                key={comment.id}
+                className="p-6 space-y-4 shadow-md dark:bg-black dark:text-white rounded-xl"
+              >
+                <div className="flex items-start justify-between">
+                  <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    {comment.user.name}
+                  </span>
+                  <div className="flex items-center gap-4">
                     <button
-                      onClick={() => handleToggleReplies(comment.id)}
-                      className="text-blue-600 dark:text-blue-300 hover:underline"
+                      onClick={() => handleCommentLike(comment.id)}
+                      className={`flex items-center gap-2 px-3 py-1 rounded-full transition-all duration-300 ${
+                        user && comment.likes.includes(user.uid)
+                          ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
+                          : "bg-gray-100 text-gray-600 dark:bg-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/50"
+                      }`}
                     >
-                      {repliesVisible[comment.id]
-                        ? "Hide Replies"
-                        : "Show Replies"}
-                      {/* {repliesVisible[comment.id]
-                        ? "Hide replies"
-                        : `View replies (${comment.replyCount || 0})`} */}
+                      <ThumbsUp size={16} />
+                      <span>{comment.likes.length}</span>
                     </button>
+                    {user?.uid === comment.userId && (
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="text-red-500 transition-colors duration-300 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
                   </div>
+                </div>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {comment.content}
+                </p>
 
-                  {/* Reply Section */}
+                {/* Replies Section */}
+                <div>
+                  <button
+                    onClick={() => handleToggleReplies(comment.id)}
+                    className="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    <MessageCircle size={16} />
+                    {repliesVisible[comment.id]
+                      ? "Hide Replies"
+                      : `View Replies (${getReplyCount(comment.id)})`}
+                  </button>
+
                   {repliesVisible[comment.id] && (
-                    <div className="mt-2 ml-6">
-                      {replies[comment.id]?.length > 0 ? (
-                        replies[comment.id].map((reply) => (
-                          <div
-                            key={reply.id}
-                            className="flex items-center justify-between p-2 space-y-2 border-b last:border-none dark:border-gray-800"
-                          >
-                            <div className="text-sm">
-                              <span className="font-semibold">
-                                {formatUserName(reply.user)}
-                              </span>{" "}
-                              <p className="text-gray-600 dark:text-gray-300">
-                                {reply.content}
-                              </p>
-                            </div>
+                    <div className="pl-6 mt-4 space-y-4 border-l-2 border-gray-200 dark:border-gray-600">
+                      {replies[comment.id]?.map((reply) => (
+                        <div
+                          key={reply.id}
+                          className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
+                        >
+                          <div className="flex items-start justify-between">
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">
+                              {reply.user.name}
+                            </span>
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() =>
                                   handleReplyLike(comment.id, reply.id)
                                 }
-                                className={`flex items-center gap-2 px-2 py-1 rounded-full transition-colors ${
+                                className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-all duration-300 ${
                                   user && reply.likes.includes(user.uid)
                                     ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
-                                    : "bg-gray-100 text-gray-600 dark:bg-black dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900"
+                                    : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/50"
                                 }`}
                               >
-                                <ThumbsUp size={14} />
+                                <ThumbsUp size={12} />
                                 <span>{reply.likes.length}</span>
                               </button>
                               {user?.uid === reply.userId && (
@@ -359,20 +384,21 @@ export default function PostContent({ post }) {
                                   onClick={() =>
                                     handleDeleteReply(comment.id, reply.id)
                                   }
-                                  className="text-red-600 dark:text-red-300 hover:text-red-400"
+                                  className="text-red-500 transition-colors duration-300 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                                 >
-                                  <Trash2 size={14} />
+                                  <Trash2 size={12} />
                                 </button>
                               )}
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <p className="text-gray-500 dark:text-gray-400">
-                          No replies yet.
-                        </p>
-                      )}
-                      <div className="flex gap-2 mt-2">
+                          <p className="mt-1 text-gray-600 dark:text-gray-400">
+                            {reply.content}
+                          </p>
+                        </div>
+                      ))}
+
+                      {/* New Reply Input */}
+                      <div className="flex gap-2 mt-4">
                         <input
                           type="text"
                           value={newReply[comment.id] || ""}
@@ -383,11 +409,11 @@ export default function PostContent({ post }) {
                             }))
                           }
                           placeholder="Add a reply..."
-                          className="flex-grow p-2 bg-gray-100 rounded-lg dark:bg-black"
+                          className="flex-grow p-2 transition-all duration-300 bg-white rounded-lg shadow-inner dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
                         />
                         <button
                           onClick={() => handleAddReply(comment.id)}
-                          className="px-4 py-2 text-white bg-blue-600 rounded-lg"
+                          className="p-2 text-white transition-all duration-300 bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         >
                           <Send size={18} />
                         </button>
@@ -395,13 +421,13 @@ export default function PostContent({ post }) {
                     </div>
                   )}
                 </div>
-              ))
-            ) : (
-              <p className="text-gray-500 dark:text-gray-400">
-                No comments yet.
-              </p>
-            )}
-          </div>
+              </div>
+            ))
+          ) : (
+            <p className="italic text-center text-gray-500 dark:text-gray-400">
+              No comments yet. Be the first to share your thoughts!
+            </p>
+          )}
         </div>
       </div>
     </div>
