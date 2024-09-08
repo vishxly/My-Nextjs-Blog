@@ -25,15 +25,28 @@ export default function PostContent({ post }) {
     hljs.highlightAll();
   }, [post.content]);
 
+  const formatUserName = (user) => {
+    if (user.name && user.name !== "Unnamed User") {
+      return user.name;
+    }
+    return `Unnamed User (ID: ${user.id})`;
+  };
+
   useEffect(() => {
     const fetchComments = async () => {
+      console.log("Fetching comments for post:", post.id);
       const fetchedComments = await getComments(post.id);
       const commentsWithUserInfo = await Promise.all(
         fetchedComments.map(async (comment) => {
+          console.log(
+            `Fetching user info for comment ${comment.id}, userId: ${comment.userId}`
+          );
           const userInfo = await getUserInfo(comment.userId);
+          console.log(`User info fetched for comment ${comment.id}:`, userInfo);
           return { ...comment, user: userInfo };
         })
       );
+      console.log("Comments with user info:", commentsWithUserInfo);
       setComments(commentsWithUserInfo);
     };
     fetchComments();
@@ -41,11 +54,21 @@ export default function PostContent({ post }) {
 
   useEffect(() => {
     const fetchLikeUsers = async () => {
+      console.log("Fetching like users for post:", post.id);
       setUserInfoLoading(true);
       try {
         const likeUserInfo = await Promise.all(
-          likes.map(async (userId) => await getUserInfo(userId))
+          likes.map(async (userId) => {
+            console.log(`Fetching user info for like, userId: ${userId}`);
+            const userInfo = await getUserInfo(userId);
+            console.log(
+              `User info fetched for like, userId: ${userId}:`,
+              userInfo
+            );
+            return userInfo;
+          })
         );
+        console.log("Like users info:", likeUserInfo);
         setLikeUsers(likeUserInfo);
       } catch (error) {
         console.error("Error fetching like users:", error);
@@ -150,7 +173,12 @@ export default function PostContent({ post }) {
           </button>
           <div className="text-sm text-gray-500 dark:text-gray-400">
             Liked by:{" "}
-            {likeUsers.map((user) => user.name || "Unknown User").join(", ")}
+            {likeUsers.map((user, index) => (
+              <span key={user.id}>
+                {formatUserName(user)}
+                {index < likeUsers.length - 1 ? ", " : ""}
+              </span>
+            ))}
           </div>
         </div>
 
@@ -184,11 +212,12 @@ export default function PostContent({ post }) {
                 className="p-4 rounded-lg bg-gray-50 dark:bg-black"
               >
                 <div className="mb-2 font-semibold">
-                  {comment.user.name || "Unknown User"}
+                  {formatUserName(comment.user)}
                 </div>
                 <p className="text-gray-800 dark:text-gray-200">
                   {comment.content}
                 </p>
+
                 <div className="flex items-center gap-4 mt-2">
                   <button
                     onClick={() => handleCommentLike(comment.id)}
