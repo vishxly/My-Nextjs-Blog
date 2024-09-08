@@ -22,8 +22,29 @@ import {
   MessageCircle,
   MessageSquare,
   ChevronDown,
-  ChevronUp,
+  ChevronUp,X
 } from "lucide-react";
+
+const Modal = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg dark:bg-gray-800">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">{title}</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 export default function PostContent({ post }) {
   const { user, handleSignInWithGoogle, isLoading } = useAuth();
@@ -31,6 +52,9 @@ export default function PostContent({ post }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [likeUsers, setLikeUsers] = useState([]);
+  const [showLikeUsers, setShowLikeUsers] = useState(false);
+  const [showLikesModal, setShowLikesModal] = useState(false);
+
   const [userInfoLoading, setUserInfoLoading] = useState(true);
   const [replyCounts, setReplyCounts] = useState({});
 
@@ -229,7 +253,6 @@ export default function PostContent({ post }) {
         : [...likes, user.uid];
       setLikes(updatedLikes);
 
-      // Fetch user info for all likes, including the new one
       const allLikeUserInfo = await Promise.all(
         updatedLikes.map(async (userId) => await getUserInfo(userId))
       );
@@ -239,6 +262,10 @@ export default function PostContent({ post }) {
     } finally {
       setUserInfoLoading(false);
     }
+  };
+
+  const toggleLikesModal = () => {
+    setShowLikesModal(!showLikesModal);
   };
 
   const handleAddComment = async () => {
@@ -298,30 +325,38 @@ export default function PostContent({ post }) {
 
         {/* Like Section */}
         <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={handleLike}
-            className={`group flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
-              user && likes.includes(user.uid)
-                ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
-                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/50"
-            }`}
-          >
-            <ThumbsUp
-              size={20}
-              className="transition-transform group-hover:scale-125"
-            />
-            <span className="font-semibold">{likes.length}</span>
-          </button>
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Liked by:{" "}
-            {likeUsers.map((user, index) => (
-              <span key={user.id}>
-                {formatUserName(user)}
-                {index < likeUsers.length - 1 ? ", " : ""}
-              </span>
-            ))}
-          </div>
+        <button
+          onClick={handleLike}
+          className={`group flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
+            user && likes.includes(user.uid)
+              ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
+              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/50"
+          }`}
+        >
+          <ThumbsUp
+            size={20}
+            className="transition-transform group-hover:scale-125"
+          />
+          <span className="font-semibold">{likes.length}</span>
+        </button>
+        <button
+          onClick={toggleLikesModal}
+          className="text-sm text-gray-500 dark:text-gray-400 hover:underline focus:outline-none"
+        >
+          Show likes
+        </button>
+      </div>
+
+      <Modal isOpen={showLikesModal} onClose={toggleLikesModal} title="Liked by">
+        <div className="mt-2 max-h-[300px] overflow-y-auto">
+          {likeUsers.map((user) => (
+            <div key={user.id} className="py-2 border-b last:border-b-0 dark:border-gray-700">
+              {formatUserName(user)}
+            </div>
+          ))}
         </div>
+      </Modal>
+
       </div>
 
       {/* Comments Section */}
