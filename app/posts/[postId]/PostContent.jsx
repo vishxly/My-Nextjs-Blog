@@ -15,7 +15,7 @@ import {
   toggleReplyLike,
 } from "@/lib/firebase/post/interactions";
 import { getUserInfo } from "@/lib/firebase/userUtils";
-import { ThumbsUp, Send, Trash2, MessageCircle } from "lucide-react";
+import { ThumbsUp, Send, Trash2, MessageCircle,MessageSquare, ChevronDown, ChevronUp, } from "lucide-react";
 
 export default function PostContent({ post }) {
   const { user, handleSignInWithGoogle, isLoading } = useAuth();
@@ -30,8 +30,21 @@ export default function PostContent({ post }) {
   const [replies, setReplies] = useState({});
   const [newReply, setNewReply] = useState({});
 
-  const getReplyCount = (commentId) => {
-    return replyCounts[commentId] || 0;
+  useEffect(() => {
+    const fetchInitialReplyCounts = async () => {
+      const counts = {};
+      for (const comment of comments) {
+        const replyCount = await getReplyCount(post.id, comment.id);
+        counts[comment.id] = replyCount;
+      }
+      setReplyCounts(counts);
+    };
+    fetchInitialReplyCounts();
+  }, [comments, post.id]);
+
+  const getReplyCount = async (postId, commentId) => {
+    const replies = await getReplies(postId, commentId);
+    return replies.length;
   };
   const handleAddReplyWithCount = async (commentId) => {
     await handleAddReply(commentId);
@@ -49,8 +62,10 @@ export default function PostContent({ post }) {
     }));
   };
   const handleToggleReplies = async (commentId) => {
-    setRepliesVisible((prev) => ({ ...prev, [commentId]: !prev[commentId] }));
-    if (!replies[commentId]) {
+    const newVisibility = !repliesVisible[commentId];
+    setRepliesVisible((prev) => ({ ...prev, [commentId]: newVisibility }));
+
+    if (newVisibility && !replies[commentId]) {
       const fetchedReplies = await getReplies(post.id, commentId);
       const repliesWithUserInfo = await Promise.all(
         fetchedReplies.map(async (reply) => {
@@ -59,6 +74,8 @@ export default function PostContent({ post }) {
         })
       );
       setReplies((prev) => ({ ...prev, [commentId]: repliesWithUserInfo }));
+
+      // Update reply count to ensure it's accurate
       setReplyCounts((prev) => ({
         ...prev,
         [commentId]: repliesWithUserInfo.length,
@@ -74,30 +91,42 @@ export default function PostContent({ post }) {
     if (!newReply[commentId]?.trim()) return;
     await addReply(post.id, commentId, user.uid, newReply[commentId]);
     setNewReply((prev) => ({ ...prev, [commentId]: "" }));
-    const updatedReplies = await getReplies(post.id, commentId);
-    const repliesWithUserInfo = await Promise.all(
-      updatedReplies.map(async (reply) => {
-        const userInfo = await getUserInfo(reply.userId);
-        return { ...reply, user: userInfo };
-      })
-    );
-    setReplies((prev) => ({ ...prev, [commentId]: repliesWithUserInfo }));
+
+    // Update reply count immediately
     setReplyCounts((prev) => ({
       ...prev,
-      [commentId]: repliesWithUserInfo.length,
+      [commentId]: (prev[commentId] || 0) + 1,
     }));
+
+    // Fetch updated replies if they're visible
+    if (repliesVisible[commentId]) {
+      const updatedReplies = await getReplies(post.id, commentId);
+      const repliesWithUserInfo = await Promise.all(
+        updatedReplies.map(async (reply) => {
+          const userInfo = await getUserInfo(reply.userId);
+          return { ...reply, user: userInfo };
+        })
+      );
+      setReplies((prev) => ({ ...prev, [commentId]: repliesWithUserInfo }));
+    }
   };
 
   const handleDeleteReply = async (commentId, replyId) => {
     await deleteReply(post.id, commentId, replyId);
-    setReplies((prev) => ({
-      ...prev,
-      [commentId]: prev[commentId].filter((reply) => reply.id !== replyId),
-    }));
+
+    // Update reply count immediately
     setReplyCounts((prev) => ({
       ...prev,
       [commentId]: Math.max((prev[commentId] || 0) - 1, 0),
     }));
+
+    // Update replies list if visible
+    if (repliesVisible[commentId]) {
+      setReplies((prev) => ({
+        ...prev,
+        [commentId]: prev[commentId].filter((reply) => reply.id !== replyId),
+      }));
+    }
   };
 
   const handleReplyLike = async (commentId, replyId) => {
@@ -346,12 +375,23 @@ export default function PostContent({ post }) {
                 <div>
                   <button
                     onClick={() => handleToggleReplies(comment.id)}
-                    className="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline"
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium transition-all duration-300 bg-gray-100 rounded-full hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400"
                   >
-                    <MessageCircle size={16} />
-                    {repliesVisible[comment.id]
-                      ? "Hide Replies"
-                      : `View Replies (${getReplyCount(comment.id)})`}
+                    <MessageSquare
+                      size={18}
+                      className="text-gray-500 dark:text-gray-400"
+                    />
+                    <span>
+                      {repliesVisible[comment.id] ? "Hide" : "View"} Replies
+                    </span>
+                    <span className="flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-500 rounded-full">
+                      {replyCounts[comment.id] || 0}
+                    </span>
+                    {repliesVisible[comment.id] ? (
+                      <ChevronUp size={18} className="ml-1" />
+                    ) : (
+                      <ChevronDown size={18} className="ml-1" />
+                    )}
                   </button>
 
                   {repliesVisible[comment.id] && (
