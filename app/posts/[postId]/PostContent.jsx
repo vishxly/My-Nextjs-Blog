@@ -22,8 +22,10 @@ import {
   MessageCircle,
   MessageSquare,
   ChevronDown,
-  ChevronUp,X
+  ChevronUp,
+  X,
 } from "lucide-react";
+import CompactContentLoader from "../CompactContentLoader";
 
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -61,7 +63,7 @@ export default function PostContent({ post }) {
   const [repliesVisible, setRepliesVisible] = useState({});
   const [replies, setReplies] = useState({});
   const [newReply, setNewReply] = useState({});
-  
+
   const [showComments, setShowComments] = useState(false);
 
   useEffect(() => {
@@ -208,8 +210,6 @@ export default function PostContent({ post }) {
     };
     fetchComments();
   }, [post.id]);
-  
-  
 
   useEffect(() => {
     const fetchLikeUsers = async () => {
@@ -270,7 +270,6 @@ export default function PostContent({ post }) {
     setShowComments(!showComments);
   };
 
-
   const handleAddComment = async () => {
     if (!user) {
       await handleSignInWithGoogle();
@@ -315,7 +314,11 @@ export default function PostContent({ post }) {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="p-8 bg-white rounded-lg shadow-md dark:bg-black">
+        <CompactContentLoader />
+      </div>
+    );
   }
 
   return (
@@ -359,10 +362,17 @@ export default function PostContent({ post }) {
       </div>
 
       {/* Likes Modal */}
-      <Modal isOpen={showLikesModal} onClose={toggleLikesModal} title="Liked by">
+      <Modal
+        isOpen={showLikesModal}
+        onClose={toggleLikesModal}
+        title="Liked by"
+      >
         <div className="mt-2 max-h-[300px] overflow-y-auto">
           {likeUsers.map((user) => (
-            <div key={user.id} className="py-2 border-b last:border-b-0 dark:border-gray-700">
+            <div
+              key={user.id}
+              className="py-2 border-b last:border-b-0 dark:border-gray-700"
+            >
               {formatUserName(user)}
             </div>
           ))}
