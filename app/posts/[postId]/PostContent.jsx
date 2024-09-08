@@ -15,7 +15,15 @@ import {
   toggleReplyLike,
 } from "@/lib/firebase/post/interactions";
 import { getUserInfo } from "@/lib/firebase/userUtils";
-import { ThumbsUp, Send, Trash2, MessageCircle,MessageSquare, ChevronDown, ChevronUp, } from "lucide-react";
+import {
+  ThumbsUp,
+  Send,
+  Trash2,
+  MessageCircle,
+  MessageSquare,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 export default function PostContent({ post }) {
   const { user, handleSignInWithGoogle, isLoading } = useAuth();
@@ -304,8 +312,14 @@ export default function PostContent({ post }) {
             />
             <span className="font-semibold">{likes.length}</span>
           </button>
-          <div className="text-sm italic text-gray-500 dark:text-gray-400">
-            Appreciated by: {likes.map((user) => user.name).join(", ")}
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Liked by:{" "}
+            {likeUsers.map((user, index) => (
+              <span key={user.id}>
+                {formatUserName(user)}
+                {index < likeUsers.length - 1 ? ", " : ""}
+              </span>
+            ))}
           </div>
         </div>
       </div>
