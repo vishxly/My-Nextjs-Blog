@@ -7,9 +7,12 @@ import "highlight.js/styles/github-dark.css";
 export function RTEField() {
   const { data, handleData } = usePostForm();
   const editorRef = useRef(null);
-  const [previewContent, setPreviewContent] = useState(
-    "<p>This is the initial content of the editor.</p>"
-  ); // Initialize with default content
+  // const [previewContent, setPreviewContent] = useState(
+  //   data?.content || "<p>This is the initial content of the editor.</p>"
+  // );
+  const [editorContent, setEditorContent] = useState(
+    data?.content || "<p>This is the initial content of the editor.</p>"
+  );
   const [activeTab, setActiveTab] = useState("editor");
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
@@ -71,14 +74,32 @@ export function RTEField() {
       editor.setContent(formattedContent);
     }
   };
+  useEffect(() => {
+    if (editorRef.current && editorRef.current.editor) {
+      editorRef.current.editor.setContent(editorContent);
+    }
+  }, [editorContent]);
 
-  const handleChange = (content) => {
+  useEffect(() => {
+    if (data?.content) {
+      setEditorContent(data.content);
+    }
+  }, [data?.content]);
+
+  const handleContentChange = (content) => {
     handleData("content", content);
-    setPreviewContent(content); // Update the content state
+    setEditorContent(content);
     analyzeContent(content);
     setAutoSaveStatus("Saving...");
     setTimeout(() => setAutoSaveStatus("Saved"), 1000);
   };
+  // const handleChange = (content) => {
+  //   handleData("content", content);
+  //   setPreviewContent(content); // Update the content state
+  //   analyzeContent(content);
+  //   setAutoSaveStatus("Saving...");
+  //   setTimeout(() => setAutoSaveStatus("Saved"), 1000);
+  // };
 
   const analyzeContent = (content) => {
     const words = content.trim().split(/\s+/);
@@ -129,10 +150,9 @@ export function RTEField() {
         <Editor
           apiKey="2zhf2cw2rpzcffhcfj8ui8hq6nm22cjny9miyay444w5vh2g"
           onInit={(_evt, editor) => (editorRef.current = editor)}
-          initialValue={
-            data?.content || "<p>This is the initial content of the editor.</p>"
-          }
-          value={previewContent} // Use the content state here
+          initialValue="<p>This is the initial content of the editor.</p>"
+          value={editorContent}
+          onContentChange={handleContentChange} // Use the content state here
           init={{
             height: 500,
             menubar: false,
@@ -182,14 +202,14 @@ export function RTEField() {
               });
             },
           }}
-          onEditorChange={handleChange}
+          onEditorChange={handleContentChange}
         />
       ) : (
         <div className="p-4 bg-gray-100 border rounded dark:bg-gray-800">
           <h3 className="mb-2 text-lg font-semibold">Preview</h3>
           <div
             className="prose preview-content dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: previewContent }}
+            dangerouslySetInnerHTML={{ __html: editorContent }}
           />
         </div>
       )}
