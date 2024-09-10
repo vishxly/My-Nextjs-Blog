@@ -150,7 +150,6 @@ export function RTEField() {
         <Editor
           apiKey="2zhf2cw2rpzcffhcfj8ui8hq6nm22cjny9miyay444w5vh2g"
           onInit={(_evt, editor) => (editorRef.current = editor)}
-          initialValue="<p>This is the initial content of the editor.</p>"
           value={editorContent}
           onContentChange={handleContentChange} // Use the content state here
           init={{
