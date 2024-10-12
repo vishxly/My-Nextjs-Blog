@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function PostListView() {
   const posts = await getAllPosts();
+  
   if (!posts) {
     return (
       <div className="p-4 dark:text-white">
@@ -15,13 +16,16 @@ export default async function PostListView() {
     );
   }
 
+  // Sort posts by date in descending order (latest first)
+  const sortedPosts = posts.sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
+
   return (
     <section className="min-h-screen dark:bg-black">
       <div className="h-[50rem] w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative">
         {/* Radial gradient for the container to give a faded look */}
         <div className="absolute pointer-events-none inset-0 dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-5">
-          {posts?.map((post, key) => {
+          {sortedPosts.map((post, key) => {
             return <PostCard post={post} key={key} />;
           })}
         </div>
