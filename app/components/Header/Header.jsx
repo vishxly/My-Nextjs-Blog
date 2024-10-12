@@ -21,7 +21,7 @@ export default function Header() {
           <Link href={"/"} aria-label="Home">
             <img
               className="h-10 transition-transform duration-300 ease-in-out rounded-md sm:h-12 hover:scale-105"
-              src="/blog.jpg"
+              src="/blogv2.jpg"
               alt="BlogV Logo"
             />
           </Link>
