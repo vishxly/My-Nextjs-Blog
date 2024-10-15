@@ -21,7 +21,7 @@ export default async function PostListView() {
 
   return (
     <section className="min-h-screen dark:bg-black">
-      <div className="h-[50rem] w-full dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative">
+      <div className=" dark:bg-black bg-white dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative">
         {/* Radial gradient for the container to give a faded look */}
         <div className="absolute pointer-events-none inset-0 dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
         <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-5">
