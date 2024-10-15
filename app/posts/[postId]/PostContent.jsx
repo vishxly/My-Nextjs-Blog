@@ -185,9 +185,11 @@ export default function PostContent({ post }) {
       ),
     }));
   };
-
   useEffect(() => {
-    hljs.highlightAll();
+    // Highlight all code blocks in the post content
+    document.querySelectorAll("pre code").forEach((block) => {
+      hljs.highlightElement(block);
+    });
   }, [post.content]);
 
   const formatUserName = (user) => {
@@ -323,10 +325,13 @@ export default function PostContent({ post }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="p-8 space-y-8">
+      <div className="p-8 space-y-8 text-black dark:text-white">
         {/* Post Content */}
-        <div className="prose dark:prose-invert max-w-none">
-          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className="prose text-black dark:prose-invert max-w-none dark:text-white">
+          <div
+            dangerouslySetInnerHTML={{ __html: post.content }}
+            className="post-content"
+          />
         </div>
 
         {/* Like and Comment Section */}

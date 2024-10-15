@@ -1,10 +1,8 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 const svgToDataUri = require("mini-svg-data-uri");
-const colors = require("tailwindcss/colors");
 const flattenColorPalette =
   require("tailwindcss/lib/util/flattenColorPalette").default;
 
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "class",
   content: [
@@ -18,6 +16,20 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "none",
+            color: "#333",
+            a: {
+              color: "#3182ce",
+              "&:hover": {
+                color: "#2c5282",
+              },
+            },
+          },
+        },
       },
     },
   },
@@ -45,8 +57,10 @@ module.exports = {
         { values: flattenColorPalette(theme("backgroundColor")), type: "color" }
       );
     },
+    require("@tailwindcss/typography"), // Move this into plugins array
   ],
 };
+
 function addVariablesForColors({ addBase, theme }) {
   let allColors = flattenColorPalette(theme("colors"));
   let newVars = Object.fromEntries(

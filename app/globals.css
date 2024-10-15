@@ -5,16 +5,25 @@
 
 /* Existing styles... */
 
-/* Styles for code blocks */
+/* Global styles */
+:root {
+  --code-bg-color: #030303;
+  --code-text-color: #f8f8f2;
+}
+
+.dark .post-content pre {
+  --code-bg-color: #ffffff;
+  --code-text-color: #090909;
+}
+
 .post-content pre {
-  background-color: #23241f;
-  color: #f8f8f2;
+  background-color: var(--code-bg-color);
+  color: var(--code-text-color);
   padding: 1em;
   margin: 0.5em 0;
   overflow: auto;
   border-radius: 0.3em;
 }
-
 .post-content code {
   font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
   font-size: 1em;
@@ -47,7 +56,6 @@
   margin-top: 5px;
   padding-left: 16px;
 }
-
 
 /* src/styles/globals.css */
 body {

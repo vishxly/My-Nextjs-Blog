@@ -32,7 +32,7 @@ export default function Page() {
   }, [updatePostId]);
 
   return (
-    <main className="flex flex-col w-full min-h-screen gap-3 p-3 md:p-6 dark:bg-black dark:text-white">
+    <main className="flex flex-col w-full min-h-screen gap-3 p-3 text-black md:p-6 dark:bg-black dark:text-white ">
       <div className="flex flex-wrap items-center gap-3 md:gap-5">
         {updatePostId && (
           <div className="flex">
@@ -112,7 +112,7 @@ function FormFields({ data, handleData, updatePostId, image, setImage }) {
 function InputField({ label, value, onChange, disabled, required }) {
   return (
     <div className="flex flex-col gap-2 ">
-      <label className="text-sm text-gray-500">
+      <label className="text-sm ">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       <input
